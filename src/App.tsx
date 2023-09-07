@@ -1,11 +1,11 @@
 import { FC } from 'react'
-import HomePage from './components/Home/HomePage'
+import WeatherApp from './components/Home/WeatherApp'
 // import './App.css'
 
 const App: FC = () => {
   return (
     <div id="App">
-      <HomePage />
+      <WeatherApp />
     </div>
   )
 }

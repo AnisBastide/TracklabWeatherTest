@@ -12,11 +12,17 @@ import { IPrice } from './price'
  * @property {IPrice} price - The price of the train
  * @property {number} delayedBy - The delay of the train in minutes
  */
-export interface ITrain {
+export interface IWeather {
   trainName: string
   trainNumber: string
   departureTime: IDepartureTime
   seatsAvailable: ISeatsAvailable
   price: IPrice
   delayedBy: number
+}
+
+export interface ICity {
+  name: string
+  lat: number
+  lon: number
 }
