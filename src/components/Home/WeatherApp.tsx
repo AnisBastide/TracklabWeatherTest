@@ -1,53 +1,36 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-
-
+import React, { useEffect, useState } from 'react'
+import { fetchWeatherData } from '../../services/weather.service'
+import { IWeather } from '../../models/weather'
 // Models
-import { ICity, IWeather } from '../../models/weather'
 
 const WeatherApp: React.FC = () => {
-  //console.log('qqqqqq')
-  //console.log(process.env.REACT_APP_API_KEY)
-  const [temperatureThreshold, setTemperatureThreshold] = useState<number>(0)
-  const [city, setCity] = useState<string>('')
+  const [temperatureThreshold, setTemperatureThreshold] = useState<string>('')
+  const [city, setCity] = useState<string>('Paris')
+  const [temperatureForecast, setTemperatureForecast] = useState<IWeather[]>([])
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    const formData = new FormData(e.target)
-    console.log(formData.get('temperature'))
-    await fetchWeatherData()
-
-    // alert('A name was submitted: ' + this.state.value)
-  }
   function handleTemperatureChange(e) {
-    if (e.target.value == '') {
-      setTemperatureThreshold(0)
-    }
-    if (parseInt(e.target.value)) {
+    if (parseInt(e.target.value) || e.target.value === '') {
       setTemperatureThreshold(e.target.value)
     }
   }
 
   function handleCityChange(e) {
     setCity(e.target.value)
-  }
-  const fetchWeatherData = async () => {
-    try {
-      // Replace the URL with your backend API endpoint
-      const response = await axios.get<ICity[]>(
-        `http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=5&appid=${process.env.REACT_APP_API_KEY}`
-      )
-      console.log('Trains List ', response.data)
-      // setTrains(response.data)
-    } catch (error) {
-      console.error('Failed to fetch train data:', error)
-    }
+    console.log(city)
   }
 
-  // useEffect(() => {
-  //   console.log('Use Effect Called')
-  //   fetchTrainsData()
-  // }, [])
+  useEffect(() => {
+    console.log('Use Effect Called')
+    const fetchData = async () => {
+      const weatherData = await fetchWeatherData(
+        temperatureThreshold as number,
+        city
+      )
+      return weatherData
+    }
+    fetchData().then((result) => setTemperatureForecast(result))
+    console.log(temperatureForecast)
+  }, [city])
 
   // const handleRefresh = () => {
   //   console.log('Refresh Button Clicked')
@@ -56,7 +39,7 @@ const WeatherApp: React.FC = () => {
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         <label>
           Temperature threshold:
           <input
@@ -75,8 +58,26 @@ const WeatherApp: React.FC = () => {
             onChange={handleCityChange}
           />
         </label>
-        <input type="submit" value="Submit" />
       </form>
+
+      <ul className="days">
+        {temperatureForecast &&
+          temperatureForecast.map((forecast) => (
+            <li key={forecast.dt_txt}>
+              <span
+                className={
+                  forecast.main.temp_max > temperatureThreshold ? 'active' : ''
+                }
+              >
+                {forecast.main.temp_max}
+                {forecast.dt_txt}
+                {forecast.main.temp_max > temperatureThreshold
+                  ? 'Extreme Heat'
+                  : ''}
+              </span>
+            </li>
+          ))}
+      </ul>
     </>
   )
 }
