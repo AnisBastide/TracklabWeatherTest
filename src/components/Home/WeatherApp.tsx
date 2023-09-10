@@ -22,29 +22,21 @@ const WeatherApp: React.FC = () => {
   useEffect(() => {
     console.log('Use Effect Called')
     const fetchData = async () => {
-      const weatherData = await fetchWeatherData(
-        temperatureThreshold as number,
-        city
-      )
-      return weatherData
+      return await fetchWeatherData(temperatureThreshold as number, city)
     }
     fetchData().then((result) => setTemperatureForecast(result))
     console.log(temperatureForecast)
   }, [city])
 
-  // const handleRefresh = () => {
-  //   console.log('Refresh Button Clicked')
-  //   fetchTrainsData()
-  // }
-
   return (
     <>
-      <form>
+      <form className="form">
         <label>
           Temperature threshold:
           <input
-            type="text"
+            type="number"
             name="temperature"
+            placeholder={'max temperature'}
             value={temperatureThreshold}
             onChange={handleTemperatureChange}
           />
@@ -64,17 +56,21 @@ const WeatherApp: React.FC = () => {
         {temperatureForecast &&
           temperatureForecast.map((forecast) => (
             <li key={forecast.dt_txt}>
-              <span
+              <div
                 className={
-                  forecast.main.temp_max > temperatureThreshold ? 'active' : ''
+                  (forecast.main.temp_max > temperatureThreshold
+                    ? 'heat'
+                    : 'noHeat') + ' temperature'
                 }
               >
-                {forecast.main.temp_max}
-                {forecast.dt_txt}
-                {forecast.main.temp_max > temperatureThreshold
-                  ? 'Extreme Heat'
-                  : ''}
-              </span>
+                <span>{forecast.main.temp_max} degré celsius</span>
+                <span>{forecast.dt_txt}</span>
+                <span>
+                  {forecast.main.temp_max > temperatureThreshold
+                    ? 'Extreme Heat'
+                    : 'Correct temperature'}
+                </span>
+              </div>
             </li>
           ))}
       </ul>

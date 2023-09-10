@@ -1,25 +1,17 @@
 body {
-    margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-
-ul {
-    list-style-type: none;
-}
-
-/* Days (1-31) */
 .days {
     padding: 10px 0;
     background: #eee;
     margin: 0;
 }
 
-.days li {
+li {
     list-style-type: none;
-    display: inline-block;
     width: 13.6%;
     text-align: center;
     margin-bottom: 5px;
@@ -27,9 +19,30 @@ ul {
     color: #777;
 }
 
-/* Highlight the "current" day */
-.days li .active {
-    padding: 5px;
+ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.heat {
     background: red;
-    color: white !important
+}
+
+.noHeat {
+    background: darkgreen;
+}
+
+.temperature {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px;
+    color: white !important;
+}
+
+.form {
+    display: flex;
+    justify-content: space-around;
+    margin: 25px;
 }
