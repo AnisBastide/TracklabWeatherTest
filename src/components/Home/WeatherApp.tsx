@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { fetchWeatherData } from '../../services/weather.service'
-import { IWeather } from '../../models/weather'
+import { fetchWeatherData, findCity } from '../../services/weather.service'
+import { ICity, IWeatherDay } from '../../models/weather'
 // Models
 
 const WeatherApp: React.FC = () => {
   const [temperatureThreshold, setTemperatureThreshold] = useState<string>('')
   const [city, setCity] = useState<string>('Paris')
-  const [temperatureForecast, setTemperatureForecast] = useState<IWeather[]>([])
+  const [selectedCity, setSelectedCity] = useState<ICity>()
+  const [temperatureForecast, setTemperatureForecast] = useState<IWeatherDay[]>(
+    []
+  )
 
   function handleTemperatureChange(e) {
     if (parseInt(e.target.value) || e.target.value === '') {
@@ -16,16 +19,22 @@ const WeatherApp: React.FC = () => {
 
   function handleCityChange(e) {
     setCity(e.target.value)
-    console.log(city)
   }
 
   useEffect(() => {
-    console.log('Use Effect Called')
     const fetchData = async () => {
-      return await fetchWeatherData(temperatureThreshold as number, city)
+      if (city === '') {
+        return
+      }
+      const selectedCity = await findCity(city)
+      setSelectedCity(selectedCity)
+      console.log(selectedCity)
+      return await fetchWeatherData(
+        temperatureThreshold as number,
+        selectedCity
+      )
     }
     fetchData().then((result) => setTemperatureForecast(result))
-    console.log(temperatureForecast)
   }, [city])
 
   return (
@@ -50,30 +59,35 @@ const WeatherApp: React.FC = () => {
             onChange={handleCityChange}
           />
         </label>
+        Selected City:{city && selectedCity?.name}
       </form>
+      {temperatureForecast &&
+        temperatureForecast.map((dayForecast, index) => (
+          <ul className="days" key={index}>
+            <div className={'dayDate'}>{dayForecast.day}</div>
+            <br />
 
-      <ul className="days">
-        {temperatureForecast &&
-          temperatureForecast.map((forecast) => (
-            <li key={forecast.dt_txt}>
-              <div
-                className={
-                  (forecast.main.temp_max > temperatureThreshold
-                    ? 'heat'
-                    : 'noHeat') + ' temperature'
-                }
-              >
-                <span>{forecast.main.temp_max} degré celsius</span>
-                <span>{forecast.dt_txt}</span>
-                <span>
-                  {forecast.main.temp_max > temperatureThreshold
-                    ? 'Extreme Heat'
-                    : 'Correct temperature'}
-                </span>
-              </div>
-            </li>
-          ))}
-      </ul>
+            {dayForecast.weather.map((forecast) => (
+              <li key={forecast.dt_txt}>
+                <div
+                  className={
+                    (forecast.main.temp_max > temperatureThreshold
+                      ? 'heat'
+                      : 'noHeat') + ' temperature'
+                  }
+                >
+                  <span>{forecast.main.temp_max}° celsius</span>
+                  <span>{new Date(forecast.dt_txt).getHours()}h</span>
+                  <span>
+                    {forecast.main.temp_max > temperatureThreshold
+                      ? 'Extreme Heat'
+                      : 'Correct temperature'}
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ))}
     </>
   )
 }
