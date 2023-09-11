@@ -16,3 +16,6 @@ Then start the server with:
 ```bash
 npm start
 ```
+
+To choose the city and the temperature threshold fill in the inputs at the top, to verify your selected city look at the
+top right.
