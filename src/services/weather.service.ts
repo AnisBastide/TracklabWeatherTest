@@ -18,8 +18,7 @@ export const fetchWeatherData = async (
     const weatherResponse = await axios.get<IWeather[]>(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${selectedCity.lat}&lon=${selectedCity.lon}&appid=${apiKey}&units=metric`
     )
-    const arrangedData = arrangeWeatherData(weatherResponse.data.list)
-    return arrangedData
+    return arrangeWeatherData(weatherResponse.data.list)
   } catch (error) {
     console.error('Failed to fetch weather data:', error)
   }

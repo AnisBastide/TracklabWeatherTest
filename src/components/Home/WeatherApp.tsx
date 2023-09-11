@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { fetchWeatherData, findCity } from '../../services/weather.service'
 import { ICity, IWeatherDay } from '../../models/weather'
-// Models
 
 const WeatherApp: React.FC = () => {
   const [temperatureThreshold, setTemperatureThreshold] = useState<string>('')
@@ -28,7 +27,6 @@ const WeatherApp: React.FC = () => {
       }
       const selectedCity = await findCity(city)
       setSelectedCity(selectedCity)
-      console.log(selectedCity)
       return await fetchWeatherData(
         temperatureThreshold as number,
         selectedCity
