@@ -9,7 +9,6 @@ import { IWeather } from '../models/weather'
 test('loads and displays inputs', async () => {
   render(<App />)
   const cityInput = await screen.findByLabelText('City:')
-  console.log(cityInput)
   const temperatureInput = await screen.findByPlaceholderText('max temperature')
   expect(cityInput).toBeInTheDocument()
   expect(temperatureInput).toBeInTheDocument()
