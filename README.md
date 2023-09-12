@@ -10,6 +10,8 @@ Install the dependencies
 ```bash
 npm install
 ```
+Then copy the .env.example file and call it .env
+Put your OpenWeatherMap api key as REACT_APP_API_KEY=
 
 Then start the server with:
 
